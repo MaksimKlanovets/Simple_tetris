@@ -14,7 +14,7 @@
 #define MY_PERFORMENCE_COUNTER
 
 #include "PerformanceCounter.h"
-
+#include "level.h"
 
 
 
@@ -29,8 +29,8 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	mConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	mConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
-	SetConsoleScreenBufferSize(mConsoleOutput, windowBufSize);
 	SetConsoleWindowInfo(mConsoleOutput, TRUE, &windowSize);
+	SetConsoleScreenBufferSize(mConsoleOutput, windowBufSize);
 	
 	if(!SetConsoleScreenBufferSize(mConsoleOutput,  windowBufSize))
 	{
@@ -47,8 +47,8 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	cursorInfo.dwSize = 1;
 	SetConsoleCursorInfo(mConsoleOutput, &cursorInfo);
 
-
-	mChiBuffer = (CHAR_INFO*)malloc((X_SIZE+1)*(Y_SIZE+1)*sizeof(CHAR_INFO));
+	if (!(mChiBuffer = (CHAR_INFO*)malloc((X_SIZE + 1) * (Y_SIZE + 1) * sizeof(CHAR_INFO)))) { printf("Allocation error."); }
+	
 
 	mDwBufferSize.X = X_SIZE + 1;
 	mDwBufferSize.Y = Y_SIZE + 1;		// размер буфера данных
@@ -62,13 +62,27 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	mLpWriteRegion.Bottom = Y_SIZE + 1;	// прямоугольник для чтения
 
 
-	for (int x=0; x<X_SIZE+1; x++)
+	for (int y=0; y<Y_SIZE+1; y++)
 	{
-		for (int y=0; y<Y_SIZE+1; y++)
+		for (int x=0; x<X_SIZE+1; x++)
 		{
-			SetChar(x, y, L' ');
+			if (levelData0[x][y] == wall )
+			{
+				switch (levelData0[x][y])
+				{
+				case wall:		SetChar(x, y, wall); break;
+			
+				}
+			}
+			
+			else
+			{
+				SetChar(x, y, L' ');
+
+			}
 		}
 	}
+	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 }
 
 BaseApp::~BaseApp()
@@ -88,12 +102,15 @@ wchar_t BaseApp::GetChar(int x, int y)
 	return mChiBuffer[x + (X_SIZE+1)*y].Char.AsciiChar;
 }
 
-void BaseApp::Render()
+void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD mDwBufferSize,
+	COORD mDwBufferCoord, SMALL_RECT& mLpWriteRegion)
 {
+
 	if (!WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion)) 
 	{
 		printf("WriteConsoleOutput failed - (%d)\n", GetLastError()); 
 	}
+	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 }
 
 void BaseApp::Run()
@@ -114,7 +131,7 @@ void BaseApp::Run()
 		}
 
 		UpdateF((float)deltaTime / 1000.0f);
-		Render();
+		Render(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, mLpWriteRegion);
 		Sleep(1);
 
 		while (1)

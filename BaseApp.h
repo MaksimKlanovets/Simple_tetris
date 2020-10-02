@@ -20,7 +20,7 @@ private:
 	COORD mDwBufferCoord;
 	SMALL_RECT mLpWriteRegion;
 
-	void Render();
+	void Render(HANDLE , const CHAR_INFO* , COORD ,COORD ,SMALL_RECT&);
 
 public:
 	//размеры области вывода по горизонтали и вертикали в символах
