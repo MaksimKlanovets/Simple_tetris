@@ -49,7 +49,7 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	cursorInfo.dwSize = 1;
 	SetConsoleCursorInfo(mConsoleOutput, &cursorInfo);
 
-	mChiBuffer = (CHAR_INFO*)malloc(((X_SIZE + 1) * (Y_SIZE + 1)) * sizeof(CHAR_INFO));
+	mChiBuffer = (CHAR_INFO*)malloc(((X_SIZE+1) * (Y_SIZE+1)) * sizeof(CHAR_INFO));
 
 	mDwBufferSize.X = X_SIZE + 1;
 	mDwBufferSize.Y = Y_SIZE + 1;		// размер буфера данных
@@ -62,29 +62,20 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	mLpWriteRegion.Right = X_SIZE + 1;
 	mLpWriteRegion.Bottom = Y_SIZE + 1;	// прямоугольник для чтения
 
-
 	for (int y=0; y<Y_SIZE+1; y++)
 	{
 		for (int x=0; x<X_SIZE+1; x++)
 		{
-			if (levelData0[x][y] ==wall || levelData0[x][y] == point)
-			{
-				switch (levelData0[x][y])
+				switch (levelData0[y][x])
 				{
-				case wall:		SetChar(x, y, wall); break;
-				case point: SetChar(x, y,point); break;
+				case wall:		SetChar(x, y, wall);	break;
+				case point:		SetChar(x, y,point);	break;
+				case infG:		SetChar(x, y, infG);	break;
+				default:
+								SetChar(x, y, ' ');		break;
 				}
-		
-			}
-			else
-			{
-				SetChar(x, y, '!');
-			}
-				
-			WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 		}
 	}
-	//WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 }
 
 BaseApp::~BaseApp()
@@ -132,7 +123,7 @@ void BaseApp::Run()
 				cout<<"FlushConsoleInputBuffer failed with error "<<GetLastError();
 		}
 
-		UpdateF((float)deltaTime / 1000.0f);
+		//UpdateF((float)deltaTime / 1000.0f);
 		Render(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, mLpWriteRegion);
 		Sleep(1);
 
