@@ -2,7 +2,7 @@
 
 #include "TestApp.h"
 
-TestApp::TestApp() : Parent(26, 25)
+TestApp::TestApp() : Parent(25 , 25)
 {
 	mDirection = true;
 	mObj1XOld = mObj1X = 10;

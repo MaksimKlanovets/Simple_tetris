@@ -6,6 +6,7 @@
 #include <conio.h>
 #include <assert.h>
 #include <strsafe.h>
+#include <malloc.h>
 
 
 #pragma warning(disable : 4996)
@@ -29,8 +30,9 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	mConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	mConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
-	SetConsoleWindowInfo(mConsoleOutput, TRUE, &windowSize);
 	SetConsoleScreenBufferSize(mConsoleOutput, windowBufSize);
+	SetConsoleWindowInfo(mConsoleOutput, TRUE, &windowSize);
+	
 	
 	if(!SetConsoleScreenBufferSize(mConsoleOutput,  windowBufSize))
 	{
@@ -47,8 +49,7 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	cursorInfo.dwSize = 1;
 	SetConsoleCursorInfo(mConsoleOutput, &cursorInfo);
 
-	if (!(mChiBuffer = (CHAR_INFO*)malloc((X_SIZE + 1) * (Y_SIZE + 1) * sizeof(CHAR_INFO)))) { printf("Allocation error."); }
-	
+	mChiBuffer = (CHAR_INFO*)malloc(((X_SIZE + 1) * (Y_SIZE + 1)) * sizeof(CHAR_INFO));
 
 	mDwBufferSize.X = X_SIZE + 1;
 	mDwBufferSize.Y = Y_SIZE + 1;		// размер буфера данных
@@ -66,23 +67,24 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	{
 		for (int x=0; x<X_SIZE+1; x++)
 		{
-			if (levelData0[x][y] == wall )
+			if (levelData0[x][y] ==wall || levelData0[x][y] == point)
 			{
 				switch (levelData0[x][y])
 				{
 				case wall:		SetChar(x, y, wall); break;
-			
+				case point: SetChar(x, y,point); break;
 				}
+		
 			}
-			
 			else
 			{
-				SetChar(x, y, L' ');
-
+				SetChar(x, y, '!');
 			}
+				
+			WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 		}
 	}
-	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
+	//WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 }
 
 BaseApp::~BaseApp()
