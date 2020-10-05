@@ -70,7 +70,7 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 			switch (levelData0[y][x])
 			{
 			case wall:		SetChar(x, y, wall);	break;
-			case point:		SetChar(x, y, point);	break;
+			case cpnt:		SetChar(x, y, cpnt);	break;
 			case infG:		SetChar(x, y, infG);	break;
 			default:
 				SetChar(x, y, ' ');		break;

@@ -6,7 +6,7 @@ const unsigned char rowsCount = 25;
 const unsigned char columnsCount = 24;
 
 const unsigned char wall = '#';
-const unsigned char point = '.';
+const unsigned char cpnt = '.';
 const unsigned char infG = '>';
 
 
@@ -46,7 +46,7 @@ unsigned char GetRenderCellSymbol(unsigned char cellSymbol)
 	switch (cellSymbol)
 	{
 	case wall:			return 35;
-	case point:			return 46;
+	case cpnt:			return 46;
 	case infG:			return 62;
 
 	}
