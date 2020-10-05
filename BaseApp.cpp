@@ -9,6 +9,7 @@
 #include <malloc.h>
 
 
+
 #pragma warning(disable : 4996)
 
 
@@ -22,7 +23,6 @@
 
 BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 {
-	SetConsoleTitle(L"TETRIS");
 	SMALL_RECT windowSize = {0, 0, X_SIZE, Y_SIZE};
 	COORD windowBufSize = {X_SIZE+1, Y_SIZE+1};
 
@@ -62,18 +62,19 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	mLpWriteRegion.Right = X_SIZE + 1;
 	mLpWriteRegion.Bottom = Y_SIZE + 1;	// прямоугольник для чтения
 
-	for (int y=0; y<Y_SIZE+1; y++)
+	for (int y = 0; y < Y_SIZE + 1; y++)
 	{
-		for (int x=0; x<X_SIZE+1; x++)
+		for (int x = 0; x < X_SIZE + 1; x++)
 		{
-				switch (levelData0[y][x])
-				{
-				case wall:		SetChar(x, y, wall);	break;
-				case point:		SetChar(x, y,point);	break;
-				case infG:		SetChar(x, y, infG);	break;
-				default:
-								SetChar(x, y, ' ');		break;
-				}
+
+			switch (levelData0[y][x])
+			{
+			case wall:		SetChar(x, y, wall);	break;
+			case point:		SetChar(x, y, point);	break;
+			case infG:		SetChar(x, y, infG);	break;
+			default:
+				SetChar(x, y, ' ');		break;
+			}
 		}
 	}
 }
@@ -88,6 +89,8 @@ void BaseApp::SetChar(int x, int y, wchar_t c)
 	mChiBuffer[x + (X_SIZE+1)*y].Char.UnicodeChar = c;
 	mChiBuffer[x + (X_SIZE+1)*y].Attributes = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;
 
+	//test
+	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 }
 
 wchar_t BaseApp::GetChar(int x, int y)
@@ -99,11 +102,16 @@ void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD m
 	COORD mDwBufferCoord, SMALL_RECT& mLpWriteRegion)
 {
 
+
 	if (!WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion)) 
 	{
 		printf("WriteConsoleOutput failed - (%d)\n", GetLastError()); 
 	}
+
+	
+
 	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
+
 }
 
 void BaseApp::Run()
@@ -123,7 +131,7 @@ void BaseApp::Run()
 				cout<<"FlushConsoleInputBuffer failed with error "<<GetLastError();
 		}
 
-		//UpdateF((float)deltaTime / 1000.0f);
+		UpdateF((float)deltaTime / 1000.0f);
 		Render(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, mLpWriteRegion);
 		Sleep(1);
 

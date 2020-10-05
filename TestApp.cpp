@@ -1,14 +1,17 @@
 // Copyright 2009-2014 Blam Games, Inc. All Rights Reserved.
 
 #include "TestApp.h"
-
-TestApp::TestApp() : Parent(24, 24)
+#include "Figures.h"
+TestApp::TestApp() : Parent(24 , 24)
 {
-	mDirection = true;
-	mObj1XOld = mObj1X = 10;
-	mObj1YOld = mObj1Y = 10;
+
+	mObj1XOld = mObj1X = 8;
+	mObj1YOld = mObj1Y = 8;
+
 	mObj2X = 10;
 	mObj2Y = 12;
+
+	mDirection = true;
 }
 
 void TestApp::KeyPressed(int btnCode)
@@ -40,6 +43,22 @@ void TestApp::UpdateF(float deltaTime)
 
 	mObj1XOld = mObj1X;
 	mObj1YOld = mObj1Y;
+
+	////////////////////////////////////////////////
+
+	int n = 1; // задаём тип тетрамино
+
+		for (int i = 0; i < 4; i++)
+		{
+
+			a[i].x = figures[n][i] % 2;
+			a[i].y = figures[n][i] / 2;
+			SetChar(a[i].x+mObj1X, a[i].y, cellSymbolFigure);
+
+		}
+
+		mObj1X = 0;
+	////////////////////////////////////////////////
 
 	//-----------------------------
 

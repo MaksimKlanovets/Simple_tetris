@@ -9,11 +9,13 @@ class TestApp : public BaseApp
 	typedef BaseApp Parent;
 
 	private:
+		
+		
 		int mObj1XOld;
 		int mObj1YOld;
+		
 		int mObj1X;
 		int mObj1Y;
-
 		int mObj2X;
 		int mObj2Y;
 

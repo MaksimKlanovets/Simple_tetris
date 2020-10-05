@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="BaseApp.h" />
     <ClInclude Include="consoleColor.h" />
+    <ClInclude Include="Figures.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="PerformanceCounter.h" />
     <ClInclude Include="TestApp.h" />
