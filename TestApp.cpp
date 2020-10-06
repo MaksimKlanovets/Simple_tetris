@@ -12,6 +12,7 @@ TestApp::TestApp() : Parent(24 , 24)
 	mObj2Y = 12;
 
 	mDirection = true;
+	rotate = false;
 }
 
 void TestApp::KeyPressed(int btnCode)
@@ -24,6 +25,8 @@ void TestApp::KeyPressed(int btnCode)
 		mObj1X--;
 	else if (btnCode == 100) //d
 		mObj1X++;
+	else if (btnCode == 32)
+		rotate = true;
 
 
 
@@ -48,7 +51,7 @@ void TestApp::UpdateF(float deltaTime)
 	mObj1YOld = mObj1Y;*/
 
 	////////////////////////////////////////////////
-
+	
 	// Горизонтальное перемещение
 	if (mObj1X)
 	{
@@ -64,13 +67,28 @@ void TestApp::UpdateF(float deltaTime)
 		}
 	}
 	
+	// Вращение
+	if (rotate)
+	{
+		Point p = a[1]; // указываем центр вращения
+		for (int i = 0; i < 4; i++)
+		{
+			int x = a[i].y - p.y; // y - y0
+			int y = a[i].x - p.x; // x - x0
+			SetChar(a[i].x, a[i].y, '.');
+			a[i].x = p.x - x;
+			a[i].y = p.y + y;
+			SetChar(a[i].x, a[i].y, cellSymbolFigure);
+		}
+		rotate = false;
+	}
 
-	int n = 6; // задаём тип тетрамино
+
+	int n = 3; // задаём тип тетрамино
 	if (a[0].x == 0)
 	{
 		for (int i = 0; i < 4; i++)
 		{
-
 			a[i].x = figures[n][i] / 10;
 			a[i].y = figures[n][i] % 10;
 

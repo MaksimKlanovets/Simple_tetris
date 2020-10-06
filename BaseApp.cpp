@@ -8,10 +8,7 @@
 #include <strsafe.h>
 #include <malloc.h>
 
-
-
 #pragma warning(disable : 4996)
-
 
 #define MY_PERFORMENCE_COUNTER
 
@@ -19,20 +16,16 @@
 #include "level.h"
 
 
-
-
 BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 {
 	SMALL_RECT windowSize = {0, 0, X_SIZE, Y_SIZE};
 	COORD windowBufSize = {X_SIZE+1, Y_SIZE+1};
-
 
 	mConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	mConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
 	SetConsoleScreenBufferSize(mConsoleOutput, windowBufSize);
 	SetConsoleWindowInfo(mConsoleOutput, TRUE, &windowSize);
-	
 	
 	if(!SetConsoleScreenBufferSize(mConsoleOutput,  windowBufSize))
 	{
@@ -101,17 +94,11 @@ wchar_t BaseApp::GetChar(int x, int y)
 void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD mDwBufferSize,
 	COORD mDwBufferCoord, SMALL_RECT& mLpWriteRegion)
 {
-
-
 	if (!WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion)) 
 	{
 		printf("WriteConsoleOutput failed - (%d)\n", GetLastError()); 
 	}
-
-	
-
 	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
-
 }
 
 void BaseApp::Run()
@@ -149,6 +136,8 @@ void BaseApp::Run()
 			TCHAR  szbuff[255];
 			StringCchPrintf(szbuff, 255, TEXT("FPS: %d"), counter);
 			SetConsoleTitle(szbuff);
+
+			// функция падения фигуры 
 
 			counter = 0;
 			sum = 0;

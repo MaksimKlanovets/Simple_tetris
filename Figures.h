@@ -18,4 +18,4 @@ struct Point
 {
 	
 	int x, y;
-} a[4]{a[0].x =0}, b[4];
+} a[4]{a[0].x =0 }, b[4];

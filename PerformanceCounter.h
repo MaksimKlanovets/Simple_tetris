@@ -18,13 +18,13 @@ private:
 
 CStopwatch::CStopwatch()
 {
-    QueryPerformanceFrequency(&m_liPerfFreq);
+    QueryPerformanceFrequency(&m_liPerfFreq);//возвращающей число тактов в секунду.
     Start();
 }
 
 void CStopwatch::Start()
 {
-    QueryPerformanceCounter(&m_liPerfStart);
+    QueryPerformanceCounter(&m_liPerfStart);//число тактов
 }
 
 int CStopwatch::Now()

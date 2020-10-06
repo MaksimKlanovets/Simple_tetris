@@ -21,6 +21,8 @@ class TestApp : public BaseApp
 
 		bool mDirection;
 
+		bool rotate;
+
 	public:
 		TestApp();
 		virtual void KeyPressed(int btnCode);
