@@ -91,6 +91,10 @@ wchar_t BaseApp::GetChar(int x, int y)
 	return mChiBuffer[x + (X_SIZE+1)*y].Char.AsciiChar;
 }
 
+void BaseApp::DownFigure(float sum)
+{
+}
+
 void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD mDwBufferSize,
 	COORD mDwBufferCoord, SMALL_RECT& mLpWriteRegion)
 {
@@ -138,7 +142,7 @@ void BaseApp::Run()
 			SetConsoleTitle(szbuff);
 
 			// функция падения фигуры 
-
+			DownFigure(sum);
 			counter = 0;
 			sum = 0;
 		}

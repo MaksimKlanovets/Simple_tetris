@@ -27,4 +27,5 @@ class TestApp : public BaseApp
 		TestApp();
 		virtual void KeyPressed(int btnCode);
 		virtual void UpdateF(float deltaTime);
+		virtual void DownFigure(float );
 };

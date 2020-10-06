@@ -8,13 +8,30 @@ TestApp::TestApp() : Parent(24 , 24)
 	mObj1XOld = mObj1X = 0;
 	mObj1YOld = mObj1Y = 0;
 
-	mObj2X = 10;
-	mObj2Y = 12;
+	mObj2X = 17;// граница поля по х
+	mObj2Y = 21;// граница поля по у
 
 	mDirection = true;
 	rotate = false;
 }
+void TestApp::DownFigure(float sum)
+{
+	if (sum > 1000)
+	{
+		mObj1Y++;
+		for (int i = 0; i < 4; i++)
+		{
+			SetChar(a[i].x, a[i].y, '.');
 
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			a[i].y += mObj1Y;
+			SetChar(a[i].x, a[i].y, cellSymbolFigure);
+		}
+		mObj1Y = 0;
+	}
+}
 void TestApp::KeyPressed(int btnCode)
 {
 	if (btnCode == 119) //w
@@ -28,6 +45,7 @@ void TestApp::KeyPressed(int btnCode)
 	else if (btnCode == 32)
 		rotate = true;
 
+	
 
 
 
@@ -62,8 +80,8 @@ void TestApp::UpdateF(float deltaTime)
 		}
 		for (int i = 0; i < 4; i++)
 		{
-			a[i].x += mObj1X;
-			SetChar(a[i].x, a[i].y, cellSymbolFigure);
+				a[i].x += mObj1X;
+				SetChar(a[i].x, a[i].y, cellSymbolFigure);
 		}
 	}
 	
