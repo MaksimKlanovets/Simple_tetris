@@ -21,11 +21,11 @@ class TestApp : public BaseApp
 
 		bool mDirection;
 
-		bool rotate;
 
 	public:
 		TestApp();
 		virtual void KeyPressed(int btnCode);
 		virtual void UpdateF(float deltaTime);
 		virtual void DownFigure(float );
+		
 };
