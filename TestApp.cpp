@@ -2,30 +2,39 @@
 
 //перегрузить  инкременты mObj1OldY-Y
 
+
 #include "TestApp.h"
 #include "Figures.h"
+#include <cstdlib> // для функций rand() и srand()
+#include <ctime> // для функции time()
+
+int n ; // задаём тип тетрамино
+
 TestApp::TestApp() : Parent(24 , 24)
 {
 
 	mObj1XOld = mObj1X = 10; 
-	mObj1YOld = mObj1Y = 0;
+	mObj1YOld = mObj1Y = 1;
 
 	mObj2X = 20;
 	mObj2Y = 3;
 
 	mDirection = false;
+	mRotate = false;
+	srand(static_cast<unsigned int>(time(0)));
 }
 void TestApp::DownFigure(float sum)
 {
 	if (sum > 1000)
 	{
-		
+		if (mObj1Y > Y_SIZE - 6)
+			mObj1Y = Y_SIZE - 6;
 		for (int i = 0; i < 4; i++)
 		{
 			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
 
 		}
-		mObj1Y++;
+		mObj1YOld = ++mObj1Y;
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -34,6 +43,35 @@ void TestApp::DownFigure(float sum)
 		
 	}
 }
+void TestApp::Initializefigure(bool test)
+{
+	
+	if (testFigure == true)
+	{
+		n = rand() % 7;
+		
+		for (int i = 0; i < 4; i++)
+		{
+			a[i].x = figures[n][i] / 2;
+			a[i].y = figures[n][i] % 2;
+
+			SetChar(a[i].x + mObj1X, a[i].y+ mObj1Y, cellSymbolFigure);
+
+		}
+		testFigure = false;
+	}
+	
+}
+
+bool TestApp::checkBordersOut(int x, int y, unsigned char symbol)
+{
+	//проверка выхода горизонт
+	// нижняя граница
+	//
+	
+	return false;
+}
+
 void TestApp::KeyPressed(int btnCode)
 {
 	mObj1XOld = mObj1X;
@@ -47,15 +85,20 @@ void TestApp::KeyPressed(int btnCode)
 	else if (btnCode == 100) //d
 		mObj1X++;
 	else if (btnCode == 32)
+	{
+		mRotate = true;
+		return;
+	}
 	
 	mDirection = true;
 
 	if (mObj1X < 1)
 		mObj1X = 1;
 	else if (mObj1X >= X_SIZE - 8)
-		mObj1X = X_SIZE - 8;
-	else if (mObj1Y >= Y_SIZE - 5)
-		mObj1Y = Y_SIZE - 5;
+		mObj1X = X_SIZE - 9;
+
+	if (mObj1Y > Y_SIZE - 6)
+		mObj1Y = Y_SIZE - 6;
 	/*
 	else if (mObj1X >= X_SIZE)
 		mObj1X = X_SIZE - 1;
@@ -78,7 +121,7 @@ void TestApp::UpdateF(float deltaTime)
 	
 
 	// Вращение
-	if (mDirection)
+	if (mRotate)
 	{
 		Point p = a[1]; // указываем центр вращения
 		for (int i = 0; i < 4; i++)
@@ -90,7 +133,8 @@ void TestApp::UpdateF(float deltaTime)
 			a[i].y = p.y + y;
 			SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, cellSymbolFigure);
 		}
-		mDirection = false;
+		mRotate = false;
+		
 	}
 	// Горизонтальное перемещение
 	if (mDirection)
@@ -100,28 +144,20 @@ void TestApp::UpdateF(float deltaTime)
 			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
 
 		}
-		++mObj1X;
+		
 		for (int i = 0; i < 4; i++)
 		{
 				SetChar(a[i].x+ mObj1X, a[i].y+ mObj1Y, cellSymbolFigure);
 		}
 		mDirection = false;
+		mObj1XOld = mObj1X;
+		mObj1YOld = mObj1Y;
 	}
 
+	Initializefigure(testFigure);
+	
 
-
-	int n = 0; // задаём тип тетрамино
-	if (a[0].x == -1)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			a[i].x = figures[n][i] / 10;
-			a[i].y = figures[n][i] % 10;
-
-			SetChar(a[i].x+10, a[i].y, cellSymbolFigure);
-
-		}
-	}
+	
 	
 
 		
