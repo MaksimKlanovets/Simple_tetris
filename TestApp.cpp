@@ -25,7 +25,7 @@ TestApp::TestApp() : Parent(24 , 24)
 }
 void TestApp::DownFigure(float sum)
 {
-	if (sum > 1000)
+	if (sum > 1000 && checkBordersOut(a[0].x + mObj1XOld, a[0].y + mObj1YOld))
 	{
 		if (mObj1Y > Y_SIZE - 6)
 			mObj1Y = Y_SIZE - 6;
@@ -63,13 +63,30 @@ void TestApp::Initializefigure(bool test)
 	
 }
 
-bool TestApp::checkBordersOut(int x, int y, unsigned char symbol)
+bool TestApp::checkBordersOut(int x, int y)
 {
 	//проверка выхода горизонт
+	for (int i = 0; i < 4; i++)
+	{
+		if (a[i].x+ mObj1X  > (X_SIZE -9) || a[i].y+mObj1Y > (Y_SIZE -6))
+		{
+			mObj1X= mObj1XOld ;
+			mObj1Y = mObj1YOld;
+			return false;
+			
+		}
+		if (mObj1X < 1)
+		{
+			mObj1X = 0;
+			false;
+		}
+	}
+
+	return	true;
 	// нижняя граница
 	//
 	
-	return false;
+	
 }
 
 void TestApp::KeyPressed(int btnCode)
@@ -92,13 +109,13 @@ void TestApp::KeyPressed(int btnCode)
 	
 	mDirection = true;
 
-	if (mObj1X < 1)
-		mObj1X = 1;
-	else if (mObj1X >= X_SIZE - 8)
+	/*if (mObj1X < 1)
+		mObj1X = 1;*/
+	/*else if (mObj1X >= X_SIZE - 8)
 		mObj1X = X_SIZE - 9;
 
 	if (mObj1Y > Y_SIZE - 6)
-		mObj1Y = Y_SIZE - 6;
+		mObj1Y = Y_SIZE - 6;*/
 	/*
 	else if (mObj1X >= X_SIZE)
 		mObj1X = X_SIZE - 1;
@@ -119,7 +136,7 @@ void TestApp::UpdateF(float deltaTime)
 	
 	////////////////////////////////////////////////
 	
-
+	Initializefigure(testFigure);
 	// Вращение
 	if (mRotate)
 	{
@@ -137,10 +154,11 @@ void TestApp::UpdateF(float deltaTime)
 		
 	}
 	// Горизонтальное перемещение
-	if (mDirection)
+	if (mDirection && checkBordersOut(a[0].x + mObj1XOld, a[0].y + mObj1YOld))
 	{
 		for (int i = 0; i < 4; i++)
 		{
+
 			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
 
 		}
@@ -154,13 +172,6 @@ void TestApp::UpdateF(float deltaTime)
 		mObj1YOld = mObj1Y;
 	}
 
-	Initializefigure(testFigure);
-	
-
-	
-	
-
-		
 	////////////////////////////////////////////////
 
 	//-----------------------------

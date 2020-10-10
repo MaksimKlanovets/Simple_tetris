@@ -30,5 +30,5 @@ class TestApp : public BaseApp
 		virtual void UpdateF(float deltaTime);
 		virtual void DownFigure(float );
 		void Initializefigure(bool test);
-		bool checkBordersOut(int x, int y, unsigned char symbol);
+		bool checkBordersOut(int x, int y);
 };
