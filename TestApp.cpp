@@ -25,30 +25,38 @@ TestApp::TestApp() : Parent(24 , 24)
 }
 void TestApp::DownFigure(float sum)
 {
-	if (sum > 1000 && checkBordersOut(a[0].x + mObj1XOld, a[0].y + mObj1YOld))
+	mObj1Y++;
+	
+	if (sum > 1000 && CanMove())
 	{
 		if (mObj1Y > Y_SIZE - 6)
 			mObj1Y = Y_SIZE - 6;
+
+
 		for (int i = 0; i < 4; i++)
 		{
 			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
+			
 
 		}
-		mObj1YOld = ++mObj1Y;
+		mObj1YOld = mObj1Y;
 
 		for (int i = 0; i < 4; i++)
 		{
 			SetChar(a[i].x + mObj1X, a[i].y + mObj1Y,  cellSymbolFigure);
+			b[i] = a[i];
 		}
 		
 	}
+
 }
 void TestApp::Initializefigure(bool test)
 {
 	
 	if (testFigure == true)
 	{
-		n = rand() % 7;
+		//n = rand() % 7;
+		n = 2;
 		
 		for (int i = 0; i < 4; i++)
 		{
@@ -56,38 +64,74 @@ void TestApp::Initializefigure(bool test)
 			a[i].y = figures[n][i] % 2;
 
 			SetChar(a[i].x + mObj1X, a[i].y+ mObj1Y, cellSymbolFigure);
-
+			b[i] = a[i];
 		}
 		testFigure = false;
 	}
 	
 }
-
-bool TestApp::checkBordersOut(int x, int y)
+bool TestApp::CheckNewCoord(int objX, int objY)
 {
-	//проверка выхода горизонт
 	for (int i = 0; i < 4; i++)
 	{
-		if (a[i].x+ mObj1X  > (X_SIZE -9) || a[i].y+mObj1Y > (Y_SIZE -6))
+		if (a[objX].x + mObj1X == a[i].x + mObj1XOld &&
+			a[objY].y + mObj1Y == a[i].y + mObj1YOld && objX !=i)
 		{
-			mObj1X= mObj1XOld ;
-			mObj1Y = mObj1YOld;
 			return false;
-			
-		}
-		if (mObj1X < 1)
-		{
-			mObj1X = 0;
-			false;
 		}
 	}
 
-	return	true;
-	// нижняя граница
-	//
-	
-	
+	return true;
 }
+bool TestApp::CanMove()
+{
+	bool isTemp = true;
+	for (int i = 0; i < 4; i++)
+	{
+		// проверка на знак фигуры
+		if (CheckNewCoord(i, i)== true && 
+			GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == cellSymbolFigure )
+		{
+			testFigure = true;
+			mObj1XOld = mObj1X = 10;
+			mObj1YOld = mObj1Y = 1;
+			isTemp= false;
+			testFigure = true;
+		}
+
+		//проверка на У 
+		else if (a[i].y + mObj1Y == (Y_SIZE - 4)   )
+		{
+			testFigure = true;
+			mObj1XOld = mObj1X = 10;
+			mObj1YOld = mObj1Y = 1;
+			isTemp = false;
+		}
+
+		//проверка выхода горизонт
+		else if  (a[i].x+ mObj1X  > (X_SIZE -9) /*|| a[i].y+mObj1Y > (Y_SIZE -6)*/ )
+		{
+			mObj1X= mObj1XOld ;
+			mObj1Y = mObj1YOld;
+			isTemp = false;
+		}
+		// нижняя граница
+		else if (mObj1X < 0)
+		{
+			mObj1X = 0;
+			isTemp = false;
+		}
+		 
+	}
+
+	if (isTemp == true) 
+	{
+		return true; }
+	else {
+		return false; }
+}
+
+
 
 void TestApp::KeyPressed(int btnCode)
 {
@@ -154,7 +198,7 @@ void TestApp::UpdateF(float deltaTime)
 		
 	}
 	// Горизонтальное перемещение
-	if (mDirection && checkBordersOut(a[0].x + mObj1XOld, a[0].y + mObj1YOld))
+	if (mDirection && CanMove())
 	{
 		for (int i = 0; i < 4; i++)
 		{
