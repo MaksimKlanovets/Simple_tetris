@@ -55,8 +55,8 @@ void TestApp::Initializefigure(bool test)
 	
 	if (testFigure == true)
 	{
-		//n = rand() % 7;
-		n = 2;
+		n = rand() % 7;
+		//n = 2;
 		
 		for (int i = 0; i < 4; i++)
 		{
@@ -75,7 +75,8 @@ bool TestApp::CheckNewCoord(int objX, int objY)
 	for (int i = 0; i < 4; i++)
 	{
 		if (a[objX].x + mObj1X == a[i].x + mObj1XOld &&
-			a[objY].y + mObj1Y == a[i].y + mObj1YOld && objX !=i)
+			a[objY].y + mObj1Y == a[i].y + mObj1YOld && objX !=i || 
+			(GetChar(a[i].x + mObj1X, a[i].y + mObj1Y))== '#' )
 		{
 			return false;
 		}
@@ -96,7 +97,6 @@ bool TestApp::CanMove()
 			mObj1XOld = mObj1X = 10;
 			mObj1YOld = mObj1Y = 1;
 			isTemp= false;
-			testFigure = true;
 		}
 
 		//проверка на У 
@@ -108,19 +108,12 @@ bool TestApp::CanMove()
 			isTemp = false;
 		}
 
-		//проверка выхода горизонт
-		else if  (a[i].x+ mObj1X  > (X_SIZE -9) /*|| a[i].y+mObj1Y > (Y_SIZE -6)*/ )
+		if (GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == '#')
 		{
-			mObj1X= mObj1XOld ;
-			mObj1Y = mObj1YOld;
-			isTemp = false;
+			
+			return  false;
 		}
-		// нижняя граница
-		else if (mObj1X < 0)
-		{
-			mObj1X = 0;
-			isTemp = false;
-		}
+	
 		 
 	}
 
@@ -137,37 +130,45 @@ void TestApp::KeyPressed(int btnCode)
 {
 	mObj1XOld = mObj1X;
 	mObj1YOld = mObj1Y ;
-	if (btnCode == 119) //w
-		mObj1Y--;
-	else if (btnCode == 115) //s
+	//if (btnCode == 119) //w
+	//	mObj1Y--;
+	if (btnCode == 115) //s
+	{
 		mObj1Y++;
+	}
+
+		
 	else if (btnCode == 97) //a
+	{
 		mObj1X--;
+		if(CheckNewCoord(0,0))
+		{ mDirection = true; }
+		else {
+			mObj1X++; 
+			mDirection = false;
+		}
+		
+	}
+		
 	else if (btnCode == 100) //d
+	{
 		mObj1X++;
+		if (CanMove())
+		{
+			mDirection = true;
+		}
+		else {
+			mObj1X--;
+			mDirection = false;
+		}
+	}
+		
 	else if (btnCode == 32)
 	{
 		mRotate = true;
 		return;
 	}
 	
-	mDirection = true;
-
-	/*if (mObj1X < 1)
-		mObj1X = 1;*/
-	/*else if (mObj1X >= X_SIZE - 8)
-		mObj1X = X_SIZE - 9;
-
-	if (mObj1Y > Y_SIZE - 6)
-		mObj1Y = Y_SIZE - 6;*/
-	/*
-	else if (mObj1X >= X_SIZE)
-		mObj1X = X_SIZE - 1;
-
-	if (mObj1Y < 0)
-		mObj1Y = 0;
-	else if (mObj1Y >=Y_SIZE)
-		mObj1Y = Y_SIZE - 1;*/
 }
 
 void TestApp::UpdateF(float deltaTime)
@@ -202,9 +203,7 @@ void TestApp::UpdateF(float deltaTime)
 	{
 		for (int i = 0; i < 4; i++)
 		{
-
 			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
-
 		}
 		
 		for (int i = 0; i < 4; i++)
@@ -216,22 +215,4 @@ void TestApp::UpdateF(float deltaTime)
 		mObj1YOld = mObj1Y;
 	}
 
-	////////////////////////////////////////////////
-
-	//-----------------------------
-
-	/*SetChar(mObj2X, mObj2Y, L' ');
-	if (mDirection)
-	{
-		mObj2X++;
-		if (mObj2X == 40)
-			mDirection = false;
-	}
-	else
-	{
-		mObj2X--;
-		if (mObj2X == 10)
-			mDirection = true;
-	}
-	SetChar(mObj2X, mObj2Y, L'F');*/
 }
