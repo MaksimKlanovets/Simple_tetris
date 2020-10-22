@@ -13,7 +13,7 @@ const unsigned char infG = '>';
 
 const unsigned char levelData0[rowsCount][columnsCount +1 ] =
 {
-	"########################",
+	"#######################",
 	"#...............#      #",
 	"#...............#      #",
 	"#...............#      #",

@@ -32,5 +32,5 @@ class TestApp : public BaseApp
 		void Initializefigure(bool test);
 
 		bool CanMove();
-		bool CheckNewCoord(int objX,int objY);
+		bool CheckNewCoord(int objX,int objY, bool r= false );
 };
