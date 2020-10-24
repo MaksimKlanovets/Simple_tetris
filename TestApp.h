@@ -22,7 +22,9 @@ class TestApp : public BaseApp
 		bool mDirection;
 		bool mRotate;
 
-		bool testFigure = true ;
+		bool testFigure;
+		bool figureFall;
+
 
 	public:
 		TestApp();
@@ -33,4 +35,5 @@ class TestApp : public BaseApp
 
 		bool CanMove();
 		bool CheckNewCoord(int objX,int objY, bool r= false );
+		void figureStepDown();
 };

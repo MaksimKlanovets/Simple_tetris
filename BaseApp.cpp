@@ -82,8 +82,6 @@ void BaseApp::SetChar(int x, int y, wchar_t c)
 	mChiBuffer[x + (X_SIZE+1)*y].Char.UnicodeChar = c;
 	mChiBuffer[x + (X_SIZE+1)*y].Attributes = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;
 
-	//test
-	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 }
 
 wchar_t BaseApp::GetChar(int x, int y)
@@ -93,6 +91,7 @@ wchar_t BaseApp::GetChar(int x, int y)
 
 void BaseApp::DownFigure(float sum)
 {
+	
 }
 
 void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD mDwBufferSize,
@@ -107,20 +106,26 @@ void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD m
 
 void BaseApp::Run()
 {
+	///
 	CStopwatch timer;
 	int sum = 0;
 	int counter = 0;
-
 	int deltaTime = 0;
+	/////
+	int sumFigure = 0;
+
+	int cnt =-1;
 	while (1)
 	{
 		timer.Start();
 		if (kbhit())
 		{
 			KeyPressed (getch());
+		
 			if (!FlushConsoleInputBuffer(mConsoleIn))
 				cout<<"FlushConsoleInputBuffer failed with error "<<GetLastError();
 		}
+		
 
 		UpdateF((float)deltaTime / 1000.0f);
 		Render(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, mLpWriteRegion);
@@ -135,16 +140,30 @@ void BaseApp::Run()
 
 		sum += deltaTime;
 		counter++;
+
+		sumFigure += deltaTime;
+		if (sumFigure > 100 && cnt == 0 )
+		{
+			DownFigure(sumFigure);
+			cnt++;
+			sumFigure = 0;
+			cnt = 0;
+		}
+	
+		
+
 		if (sum >= 1000)
 		{
 			TCHAR  szbuff[255];
 			StringCchPrintf(szbuff, 255, TEXT("FPS: %d"), counter);
 			SetConsoleTitle(szbuff);
-
-			// функция падения фигуры 
 			DownFigure(sum);
 			counter = 0;
 			sum = 0;
+			cnt = 0;
+			
 		}
+
+
 	}
 }

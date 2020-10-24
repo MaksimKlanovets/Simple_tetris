@@ -1,6 +1,6 @@
 #pragma once
 
-const unsigned char cellSymbolFigure = '-';
+const unsigned char cellSymbolFigure = '*';
 
 // Массив фигурок-тетрамино
 const int figures[7][4] =

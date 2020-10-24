@@ -7,8 +7,9 @@
 #include "Figures.h"
 #include <cstdlib> // для функций rand() и srand()
 #include <ctime> // для функции time()
-
-int n ; // задаём тип тетрамино
+#include "PerformanceCounter.h"
+int CreateFigure ; // задаём тип тетрамино
+int PreviewNextFigure;
 
 TestApp::TestApp() : Parent(24 , 24)
 {
@@ -22,32 +23,21 @@ TestApp::TestApp() : Parent(24 , 24)
 	mDirection = false;
 	mRotate = false;
 	srand(static_cast<unsigned int>(time(0)));
+
+	testFigure = true;
+	figureFall = false;
 }
 void TestApp::DownFigure(float sum)
 {
-	mObj1Y++;
-	
-	if (sum > 1000 && CanMove())
+	if (sum >= 100 && figureFall == true)
 	{
-		if (mObj1Y > Y_SIZE - 6)
-			mObj1Y = Y_SIZE - 6;
-
-
-		for (int i = 0; i < 4; i++)
-		{
-			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
-			
-
-		}
-		mObj1YOld = mObj1Y;
-
-		for (int i = 0; i < 4; i++)
-		{
-			SetChar(a[i].x + mObj1X, a[i].y + mObj1Y,  cellSymbolFigure);
-			b[i] = a[i];
-		}
-		
+		figureStepDown();
 	}
+	else if (sum >=1000)
+	{
+		figureStepDown();
+	}
+	
 
 }
 void TestApp::Initializefigure(bool test)
@@ -55,13 +45,13 @@ void TestApp::Initializefigure(bool test)
 	
 	if (testFigure == true)
 	{
-		n = rand() % 7;
-		//n = 0;
+		CreateFigure = rand() % 7;
+		//n = 2;
 		
 		for (int i = 0; i < 4; i++)
 		{
-			a[i].x = figures[n][i] / 2;
-			a[i].y = figures[n][i] % 2;
+			a[i].x = figures[CreateFigure][i] / 2;
+			a[i].y = figures[CreateFigure][i] % 2;
 
 			SetChar(a[i].x + mObj1X, a[i].y+ mObj1Y, cellSymbolFigure);
 			b[i] = a[i];
@@ -96,18 +86,30 @@ bool TestApp::CheckNewCoord(int objX, int objY,bool r )
 			if (GetChar(objX + mObj1X, objY + mObj1Y) == '.' ||
 				GetChar(objX + mObj1X, objY + mObj1Y) == cellSymbolFigure)
 			{
-				
-				
 				return false;
 			}
 			return true;
-
-			
 		}
-	
-	
-	
-	
+}
+void TestApp::figureStepDown()
+{
+	mObj1Y++;
+	if (CanMove())
+	{
+		if (mObj1Y > Y_SIZE - 6)
+			mObj1Y = Y_SIZE - 6;
+		for (int i = 0; i < 4; i++)
+		{
+			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
+		}
+		mObj1YOld = mObj1Y;
+
+		for (int i = 0; i < 4; i++)
+		{
+			SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, cellSymbolFigure);
+			b[i] = a[i];
+		}
+	}
 }
 bool TestApp::CanMove()
 {
@@ -122,6 +124,7 @@ bool TestApp::CanMove()
 			mObj1XOld = mObj1X = 10;
 			mObj1YOld = mObj1Y = 1;
 			isTemp= false;
+			figureFall = false;
 		}
 
 		//проверка на У 
@@ -131,6 +134,7 @@ bool TestApp::CanMove()
 			mObj1XOld = mObj1X = 10;
 			mObj1YOld = mObj1Y = 1;
 			isTemp = false;
+			figureFall = false;
 		}
 
 		if (GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == '#')
@@ -142,11 +146,8 @@ bool TestApp::CanMove()
 		 
 	}
 
-	if (isTemp == true) 
-	{
-		return true; }
-	else {
-		return false; }
+	
+	return isTemp;
 }
 
 
@@ -159,7 +160,7 @@ void TestApp::KeyPressed(int btnCode)
 	//	mObj1Y--;
 	if (btnCode == 115) //s
 	{
-		//mObj1Y++;
+		figureFall = true;
 	}
 
 		
@@ -236,13 +237,16 @@ void TestApp::UpdateF(float deltaTime)
 		}
 
 		for (int i = 0; i < 4; i++)
+		{
+				SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, '.');
+		}
+		for (int i = 0; i < 4; i++)
 			{
 				int x = a[i].y - p.y; // y - y0
 				int y = a[i].x - p.x; // x - x0
 				
 				if (mRotate )
 				{
-					SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, '.');
 					a[i].x = p.x - x;
 					a[i].y = p.y + y;
 					SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, cellSymbolFigure);
@@ -258,7 +262,7 @@ void TestApp::UpdateF(float deltaTime)
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
+			SetChar(a[i].x + mObj1XOld,  a[i].y + mObj1YOld, '.');
 		}
 		
 		for (int i = 0; i < 4; i++)
