@@ -16,11 +16,12 @@
 #include "level.h"
 
 
-BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
+BaseApp::BaseApp(int xSize, int ySize) :
+	X_SIZE(xSize), Y_SIZE(ySize),X_SIZE_FIELD(xSize-8), Y_SIZE_FIELD(xSize - 4)
 {
 	SMALL_RECT windowSize = {0, 0, X_SIZE, Y_SIZE};
 	COORD windowBufSize = {X_SIZE+1, Y_SIZE+1};
-
+	
 	mConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	mConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
@@ -81,6 +82,7 @@ void BaseApp::SetChar(int x, int y, wchar_t c)
 {
 	mChiBuffer[x + (X_SIZE+1)*y].Char.UnicodeChar = c;
 	mChiBuffer[x + (X_SIZE+1)*y].Attributes = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;
+	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 
 }
 

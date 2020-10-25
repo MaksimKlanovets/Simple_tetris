@@ -5,7 +5,7 @@ const unsigned char cellSymbolFigure = '*';
 // Массив фигурок-тетрамино
 const int figures[7][4] =
 {
-	1,3,5,7, // I
+	3,5,7,9, // I
 	2,4,5,7, // Z
 	3,5,4,6, // S
 	3,5,4,7, // T

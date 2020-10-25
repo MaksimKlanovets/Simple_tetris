@@ -25,7 +25,7 @@ class TestApp : public BaseApp
 		bool testFigure;
 		bool figureFall;
 
-
+		int gCreateFigure;
 	public:
 		TestApp();
 		virtual void KeyPressed(int btnCode);

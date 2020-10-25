@@ -27,6 +27,10 @@ public:
 	const int X_SIZE;
 	const int Y_SIZE;
 
+	//размеры игрового поля
+	const int X_SIZE_FIELD;
+	const int Y_SIZE_FIELD;
+
 	//аргументами являются размеры области вывода по горизонтали и вертикали в символах
 	BaseApp(int xSize=26, int ySize=25);
 	virtual ~BaseApp();
