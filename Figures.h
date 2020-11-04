@@ -1,5 +1,5 @@
 #pragma once
-
+#include "level.h"
 const unsigned char cellSymbolFigure = '*';
 
 // Массив фигурок-тетрамино

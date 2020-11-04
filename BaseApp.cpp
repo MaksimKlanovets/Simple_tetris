@@ -63,8 +63,8 @@ BaseApp::BaseApp(int xSize, int ySize) :
 
 			switch (levelData0[y][x])
 			{
-			case wall:		SetChar(x, y, wall);	break;
-			case cpnt:		SetChar(x, y, cpnt);	break;
+			case gWallLevelData:		SetChar(x, y, gWallLevelData);	break;
+			case gPoingLevelData:		SetChar(x, y, gPoingLevelData);	break;
 			case infG:		SetChar(x, y, infG);	break;
 			default:
 				SetChar(x, y, ' ');		break;
@@ -91,10 +91,7 @@ wchar_t BaseApp::GetChar(int x, int y)
 	return mChiBuffer[x + (X_SIZE+1)*y].Char.AsciiChar;
 }
 
-void BaseApp::DownFigure(float sum)
-{
-	
-}
+
 
 void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD mDwBufferSize,
 	COORD mDwBufferCoord, SMALL_RECT& mLpWriteRegion)
@@ -146,7 +143,7 @@ void BaseApp::Run()
 		sumFigure += deltaTime;
 		if (sumFigure > 100 && cnt == 0 )
 		{
-			DownFigure(sumFigure);
+			//DownFigure(sumFigure);
 			cnt++;
 			sumFigure = 0;
 			cnt = 0;
@@ -159,7 +156,7 @@ void BaseApp::Run()
 			TCHAR  szbuff[255];
 			StringCchPrintf(szbuff, 255, TEXT("FPS: %d"), counter);
 			SetConsoleTitle(szbuff);
-			DownFigure(sum);
+			//DownFigure(sum);
 			counter = 0;
 			sum = 0;
 			cnt = 0;

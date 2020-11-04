@@ -23,23 +23,216 @@ TestApp::TestApp() : Parent(24 , 24){
 	mRotate = false;
 	srand(static_cast<unsigned int>(time(0)));
 
-	testFigure = true;
+	createNewFigure = true;
 	figureFall = false;
 	gCreateFigure = rand() % 7;
 }
-void TestApp::DownFigure(float sum){
-	if (sum >= 100 && figureFall == true){
-		figureStepDown();
+//void TestApp::DownFigure(float sum){
+//	if (sum >= 100 && figureFall == true){
+//		figureStepDown();
+//	}
+//	else if (sum >=1000){
+//		figureStepDown();
+//	}
+//}
+
+void TestApp::KeyPressed(int btnCode)
+{
+	
+
+	mObj1XOld = mObj1X;
+	mObj1YOld = mObj1Y;
+
+	
+	switch (btnCode)
+	{
+	case 119://w
+	{
+		mObj1Y--;
+		break;
 	}
-	else if (sum >=1000){
-		figureStepDown();
+	case 115: //s
+	{
+		mObj1Y++;
+		break;
 	}
+
+	case 97://a
+	{
+		mObj1X--;
+		break;
+	}
+	case 100://d
+	{
+		mObj1X++;
+		break;
+	}
+
+	case 32://space
+	{
+		mRotate = true;
+		break;
+	}
+	default:
+		break;
+	}
+	
+	CanRotateFigure();
+	//проверяем следующие координаты
+	if (checkCoordForMove())
+	{
+		//стереть старые коордитаты
+		deleteFigure();
+		//установить новые
+		setFigureNewCoord();
+	}
+
+	//если фолс новые коорд = страрым
+	else if (!CanStepBelow())
+	{
+		  
+		  createNewFigure = true;
+	}
+	else {
+		  mObj1X = mObj1XOld;
+		  mObj1Y = mObj1YOld;
+	}
+	
+	//if (mObj1X < 1) { mObj1X = 1; }
+
+	//проверяем есть ли возможность удалить полосу
+	CanDeleteLineBoard();
+
+
+	//создание новой фигуры
+	Initializefigure();
 }
 
-void TestApp::Initializefigure(bool test){
+bool TestApp::CanStepBelow()
+{
+	bool bResultWork = true;
 	
-	if (testFigure == true)	{
+		deleteFigure();
+		for (int i = 0; i < 4; i++)
+		{
+			if (GetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld+1) == gWallLevelData ||
+				GetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld+1) == cellSymbolFigure)
+			{
+				bResultWork = false;
+			}
+		}
+		setFigureOldCoord();
+	
+	return bResultWork;
+}
+
+void TestApp::deleteFigure()
+{
+	for (int i = 0; i < 4; i++) {
+		SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, gPoingLevelData);
+	}
+}
+void TestApp::setFigureNewCoord()
+{
+	for (int i = 0; i < 4; i++) {
+		SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, cellSymbolFigure);
+	}
+}
+void TestApp::setFigureOldCoord()
+{
+	for (int i = 0; i < 4; i++) {
+		SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, cellSymbolFigure);
+	}
+}
+bool TestApp::CanRotateFigure()
+{
+
+	bool bResultWork = true;
+	for (int i = 0; i < 4; i++)
+	{
+		b[i] = a[i];
+	}
+	deleteFigure();
+	// Вращение
+		Point p = a[1]; // указываем центр вращения
+		for (int i = 0; i < 4; i++) {
+			int x = a[i].y - p.y; // y - y0
+			int y = a[i].x - p.x; // x - x0
+
+			
+		}
+
+		for (int i = 0; i < 4; i++) {
+			int x = a[i].y - p.y; // y - y0
+			int y = a[i].x - p.x; // x - x0
+			
+				a[i].x = p.x - x;
+				a[i].y = p.y + y;
+		
+		}
+		if (!checkCoordForMove())
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				a[i] = b[i];
+			}
+			bResultWork = false;
+
+		}
+		setFigureOldCoord();
+
+	return bResultWork;
+}
+void TestApp::CanDeleteLineBoard()
+{
+	/////////////////////////////////
+				//----ПРОВЕРКА ЛИНИИ----//
+	int tempcnt = Y_SIZE_FIELD - 1;
+	for (int y = Y_SIZE_FIELD - 1; y > 0; y--) {
+		int count = 0;
+		for (int x = 1; x < X_SIZE_FIELD; x++) {
+			if (GetChar(x, y) == cellSymbolFigure) {
+				count++;
+			}
+			SetChar(x, tempcnt, GetChar(x, y));
+		}
+		if (count < (X_SIZE_FIELD - 1)) {
+			tempcnt--;
+		}
+	}
+}
+bool TestApp::checkCoordForMove()
+{
+	bool bResultWork = true;
+	if (mObj1XOld != mObj1X || mObj1YOld != mObj1Y || mRotate == true)
+	{
+		deleteFigure();
+		for (int i = 0; i < 4; i++)
+		{
+			if (GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == gWallLevelData ||
+				GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == cellSymbolFigure)
+			{
+				bResultWork = false;
+			}
+		} 
+		setFigureOldCoord();
+	}
+	
+
+	return bResultWork;
+}
+
+
+
+void TestApp::Initializefigure(){
+	
+	if (createNewFigure == true)	{
+
+		mObj1XOld = mObj1X = 7;
+		mObj1YOld = mObj1Y = 1;
+
 		gPreviewNextFigure = rand() % 7;
+
 		for (int y = 1; y < 10; y++)
 		{
 			for (int i = X_SIZE_FIELD + 1; i < X_SIZE - 1; i++)
@@ -52,6 +245,7 @@ void TestApp::Initializefigure(bool test){
 			a[i].x = figures[gCreateFigure][i] % 2;
 			a[i].y = figures[gCreateFigure][i] / 2;
 			SetChar(a[i].x + mObj1X, a[i].y+mObj1Y, cellSymbolFigure);
+
 			// превью следующей фигуры
 			b[i].x = figures[gPreviewNextFigure][i] % 2;
 			b[i].y = figures[gPreviewNextFigure][i] / 2;
@@ -59,189 +253,20 @@ void TestApp::Initializefigure(bool test){
 
 			
 		}
-		testFigure = false;
+		createNewFigure = false;
 		gCreateFigure = gPreviewNextFigure;
 	}
 	
 }
-bool TestApp::CheckNewCoord(int objX, int objY,bool r )
-{
-	bool tempCanMove = true;
-		switch (r)
-		{
-			case false:	{
-				for (int i = 0; i < 4; i++)	{
-					if (a[objX].x + mObj1X == a[i].x + mObj1XOld &&
-						a[objY].y + mObj1Y == a[i].y + mObj1YOld && objX != i ||
-						(GetChar(a[i].x + mObj1X, a[i].y + mObj1Y)) == '#' &&
-						GetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld + 1) != '.')	{
-						tempCanMove = false;
-						break;
-					}
-				}
-				break;
-			}
-			case true: {
-
-				if (GetChar(objX + mObj1X, objY + mObj1Y) == '.' ||
-					GetChar(objX + mObj1X, objY + mObj1Y) == cellSymbolFigure) {
-					tempCanMove = false;
-				}
-				break;
-			}
-		}
-	return tempCanMove;
-}
-void TestApp::figureStepDown(){
-	mObj1Y++;
-	if (CanMove()){
-		if (mObj1Y > Y_SIZE - 6) {
-			mObj1Y = Y_SIZE - 6;
-		}
-		
-		for (int i = 0; i < 4; i++)	{
-			SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, '.');
-		}
-		mObj1YOld = mObj1Y;
-
-		for (int i = 0; i < 4; i++)	{
-			SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, cellSymbolFigure);
-		}
-	}
-}
-
-bool TestApp::CanMove(){
-	bool isTemp = true;
-	for (int i = 0; i < 4; i++)	{
-		// проверка на знак фигуры
-		if (CheckNewCoord(i, i)== true && 
-			GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == cellSymbolFigure)	{
-			testFigure = true;
-			mObj1XOld = mObj1X = 7;
-			mObj1YOld = mObj1Y = 1;
-			isTemp= false;
-			figureFall = false;
-		}
-
-		//проверка на У 
-		else if (a[i].y + mObj1Y == (Y_SIZE - 4)){
-			testFigure = true;
-			mObj1XOld = mObj1X = 7;
-			mObj1YOld = mObj1Y = 1;
-			isTemp = false;
-			figureFall = false;
-		}
-
-		if (GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == '#'){
-			return  false;
-		}
-	}
-	if (!isTemp){
-		/////////////////////////////////
-				//----ПРОВЕРКА ЛИНИИ----//
-		int tempcnt = Y_SIZE_FIELD - 1;
-		for (int y = Y_SIZE_FIELD - 1; y > 0; y--) {
-			int count = 0;
-			for (int x = 1; x < X_SIZE_FIELD; x++) {
-				if (GetChar(x, y) == cellSymbolFigure) {
-					count++;
-				}
-				SetChar(x, tempcnt, GetChar(x, y));
-			}
-			if (count < (X_SIZE_FIELD - 1)) {
-				tempcnt--;
-			}
-		}
-	}
-	return isTemp;
-}
-
-
-void TestApp::KeyPressed(int btnCode)
-{
-	mObj1XOld = mObj1X;
-	mObj1YOld = mObj1Y;
-
-	//if (btnCode == 119) //w
-	//	mObj1Y--;
-	if (btnCode == 115){ //s
-		figureFall = true;
-	}
-
-	else if (btnCode == 97){ //a
-		mObj1X--;
-		if(CanMove()){
-			mDirection = true; }
-		else {
-			mObj1X++; 
-			mDirection = false;
-		}
-	}
-		
-	else if (btnCode == 100){//d
-	
-		mObj1X++;
-		if (CanMove())	{
-			mDirection = true;
-		}
-		else {
-			mObj1X--;
-			mDirection = false;
-		}
-	}
-	else if (btnCode == 32)	{
-		mRotate = true;
-		return;
-	}
-}
+ 
 
 void TestApp::UpdateF(float deltaTime){
 	
-	Initializefigure(testFigure);
+	
+	Initializefigure();
+	
 
-	// Вращение
-	if (mRotate){
-		Point p = a[1]; // указываем центр вращения
-		for (int i = 0; i < 4; i++)	{
-			int x = a[i].y - p.y; // y - y0
-			int y = a[i].x - p.x; // x - x0
-
-			if (CheckNewCoord(p.x - x, p.y + y, mRotate)){
-				mRotate = false;
-				break;
-			}
-		}
-
-		for (int i = 0; i < 4; i++)	{
-				SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, '.');
-		}
-		for (int i = 0; i < 4; i++)	{
-				int x = a[i].y - p.y; // y - y0
-				int y = a[i].x - p.x; // x - x0
-				
-				if (mRotate ){
-					a[i].x = p.x - x;
-					a[i].y = p.y + y;
-					SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, cellSymbolFigure);
-					continue;
-				}
-				break;
-		}
-		mRotate = false;
-	}
-
-	// Горизонтальное перемещение
-	if (mDirection && CanMove()){
-		for (int i = 0; i < 4; i++)	{
-			SetChar(a[i].x + mObj1XOld,  a[i].y + mObj1YOld, '.');
-		}
-		for (int i = 0; i < 4; i++)	{
-				SetChar(a[i].x+ mObj1X, a[i].y+ mObj1Y, cellSymbolFigure);
-		}
-		mDirection = false;
-		mObj1XOld = mObj1X;
-		mObj1YOld = mObj1Y;
-	}
 
 	
 }
+

@@ -22,7 +22,7 @@ class TestApp : public BaseApp
 		bool mDirection;
 		bool mRotate;
 
-		bool testFigure;
+		bool createNewFigure;
 		bool figureFall;
 
 		int gCreateFigure;
@@ -30,10 +30,24 @@ class TestApp : public BaseApp
 		TestApp();
 		virtual void KeyPressed(int btnCode);
 		virtual void UpdateF(float deltaTime);
-		virtual void DownFigure(float );
-		void Initializefigure(bool test);
+		void Initializefigure();
 
-		bool CanMove();
-		bool CheckNewCoord(int objX,int objY, bool r= false );
-		void figureStepDown();
+
+		
+		////////////////////////////////////////////////////////////////
+		// function checkCoordForMove
+		bool checkCoordForMove();
+
+		//проверка на ход вниз
+		bool CanStepBelow();
+		//стереть фигуру
+		void deleteFigure();
+		//установить новые координаты фигуры
+		void setFigureNewCoord();
+		//установить фигуру на старые координаты
+		void setFigureOldCoord();
+		// function rotatefigure
+		bool CanRotateFigure();
+		//можно ли удалить полосу
+		void CanDeleteLineBoard();
 };
