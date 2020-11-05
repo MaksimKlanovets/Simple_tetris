@@ -28,6 +28,7 @@ class TestApp : public BaseApp
 		int gCreateFigure;
 	public:
 		TestApp();
+		void DownFigure(float sum);
 		virtual void KeyPressed(int btnCode);
 		virtual void UpdateF(float deltaTime);
 		void Initializefigure();
@@ -36,18 +37,20 @@ class TestApp : public BaseApp
 		
 		////////////////////////////////////////////////////////////////
 		// function checkCoordForMove
-		bool checkCoordForMove();
+		bool checkCoordForMove(struct Point *ab);
 
 		//проверка на ход вниз
 		bool CanStepBelow();
 		//стереть фигуру
-		void deleteFigure();
+		void deleteFigure(struct Point* ab);
 		//установить новые координаты фигуры
 		void setFigureNewCoord();
 		//установить фигуру на старые координаты
 		void setFigureOldCoord();
 		// function rotatefigure
-		bool CanRotateFigure();
+		bool CanRotateFigure( );
 		//можно ли удалить полосу
+	
 		void CanDeleteLineBoard();
+		
 };

@@ -27,14 +27,15 @@ TestApp::TestApp() : Parent(24 , 24){
 	figureFall = false;
 	gCreateFigure = rand() % 7;
 }
-//void TestApp::DownFigure(float sum){
-//	if (sum >= 100 && figureFall == true){
-//		figureStepDown();
-//	}
-//	else if (sum >=1000){
-//		figureStepDown();
-//	}
-//}
+void TestApp::DownFigure(float sum){
+	if (sum >= 100  && figureFall == true) {
+		mObj1Y++;
+	}
+	else if (sum >=1000 && CanStepBelow()){
+		mObj1Y++;
+	}
+	
+}
 
 void TestApp::KeyPressed(int btnCode)
 {
@@ -53,6 +54,7 @@ void TestApp::KeyPressed(int btnCode)
 	}
 	case 115: //s
 	{
+		figureFall = true;
 		mObj1Y++;
 		break;
 	}
@@ -77,12 +79,18 @@ void TestApp::KeyPressed(int btnCode)
 		break;
 	}
 	
-	CanRotateFigure();
+	if(mRotate && CanRotateFigure()){ 
+		//стереть старые коордитаты
+		deleteFigure(structA);
+		//установить новые
+		setFigureNewCoord();
+	}
+	
 	//проверяем следующие координаты
-	if (checkCoordForMove())
+	if (checkCoordForMove(structA))
 	{
 		//стереть старые коордитаты
-		deleteFigure();
+		deleteFigure(structA);
 		//установить новые
 		setFigureNewCoord();
 	}
@@ -108,15 +116,19 @@ void TestApp::KeyPressed(int btnCode)
 	Initializefigure();
 }
 
+
+
+
+
 bool TestApp::CanStepBelow()
 {
 	bool bResultWork = true;
 	
-		deleteFigure();
+		deleteFigure(structA);
 		for (int i = 0; i < 4; i++)
 		{
-			if (GetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld+1) == gWallLevelData ||
-				GetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld+1) == cellSymbolFigure)
+			if (GetChar(structA[i].x + mObj1XOld, structA[i].y + mObj1YOld+1) == gWallLevelData ||
+				GetChar(structA[i].x + mObj1XOld, structA[i].y + mObj1YOld+1) == cellSymbolFigure)
 			{
 				bResultWork = false;
 			}
@@ -126,61 +138,65 @@ bool TestApp::CanStepBelow()
 	return bResultWork;
 }
 
-void TestApp::deleteFigure()
+void TestApp::deleteFigure(Point* ab)
 {
 	for (int i = 0; i < 4; i++) {
-		SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, gPoingLevelData);
+		SetChar(ab[i].x + mObj1XOld, ab[i].y + mObj1YOld, gPoingLevelData);
 	}
 }
 void TestApp::setFigureNewCoord()
 {
 	for (int i = 0; i < 4; i++) {
-		SetChar(a[i].x + mObj1X, a[i].y + mObj1Y, cellSymbolFigure);
+		SetChar(structA[i].x + mObj1X, structA[i].y + mObj1Y, cellSymbolFigure);
 	}
 }
 void TestApp::setFigureOldCoord()
 {
 	for (int i = 0; i < 4; i++) {
-		SetChar(a[i].x + mObj1XOld, a[i].y + mObj1YOld, cellSymbolFigure);
+		SetChar(structA[i].x + mObj1XOld, structA[i].y + mObj1YOld, cellSymbolFigure);
 	}
 }
 bool TestApp::CanRotateFigure()
 {
-
+	//deleteFigure();
 	bool bResultWork = true;
 	for (int i = 0; i < 4; i++)
 	{
-		b[i] = a[i];
+		structB[i] = structA[i];
 	}
-	deleteFigure();
+	
 	// Вращение
-		Point p = a[1]; // указываем центр вращения
+		Point p = structA[1]; // указываем центр вращения
 		for (int i = 0; i < 4; i++) {
-			int x = a[i].y - p.y; // y - y0
-			int y = a[i].x - p.x; // x - x0
+			int x = structA[i].y - p.y; // y - y0
+			int y = structA[i].x - p.x; // x - x0
 
 			
 		}
 
 		for (int i = 0; i < 4; i++) {
-			int x = a[i].y - p.y; // y - y0
-			int y = a[i].x - p.x; // x - x0
+			int x = structB[i].y - p.y; // y - y0
+			int y = structB[i].x - p.x; // x - x0
 			
-				a[i].x = p.x - x;
-				a[i].y = p.y + y;
+				structB[i].x = p.x - x;
+				structB[i].y = p.y + y;
 		
 		}
-		if (!checkCoordForMove())
+		if (checkCoordForMove(structB))
 		{
+			deleteFigure(structA);
 			for (int i = 0; i < 4; i++)
 			{
-				a[i] = b[i];
+				structA[i] = structB[i];
 			}
-			bResultWork = false;
+			
 
 		}
-		setFigureOldCoord();
-
+		else {
+			bResultWork = false;
+		}
+		//setFigureOldCoord();
+		mRotate = false;
 	return bResultWork;
 }
 void TestApp::CanDeleteLineBoard()
@@ -201,16 +217,16 @@ void TestApp::CanDeleteLineBoard()
 		}
 	}
 }
-bool TestApp::checkCoordForMove()
+bool TestApp::checkCoordForMove(Point *ab)
 {
 	bool bResultWork = true;
 	if (mObj1XOld != mObj1X || mObj1YOld != mObj1Y || mRotate == true)
 	{
-		deleteFigure();
+		deleteFigure(structA);
 		for (int i = 0; i < 4; i++)
 		{
-			if (GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == gWallLevelData ||
-				GetChar(a[i].x + mObj1X, a[i].y + mObj1Y) == cellSymbolFigure)
+			if (GetChar(ab[i].x + mObj1X, ab[i].y + mObj1Y) == gWallLevelData ||
+				GetChar(ab[i].x + mObj1X, ab[i].y + mObj1Y) == cellSymbolFigure)
 			{
 				bResultWork = false;
 			}
@@ -242,18 +258,19 @@ void TestApp::Initializefigure(){
 		}
 
 		for (int i = 0; i < 4; i++)	{
-			a[i].x = figures[gCreateFigure][i] % 2;
-			a[i].y = figures[gCreateFigure][i] / 2;
-			SetChar(a[i].x + mObj1X, a[i].y+mObj1Y, cellSymbolFigure);
+			structA[i].x = figures[gCreateFigure][i] % 2;
+			structA[i].y = figures[gCreateFigure][i] / 2;
+			SetChar(structA[i].x + mObj1X, structA[i].y+mObj1Y, cellSymbolFigure);
 
 			// превью следующей фигуры
-			b[i].x = figures[gPreviewNextFigure][i] % 2;
-			b[i].y = figures[gPreviewNextFigure][i] / 2;
-			SetChar(b[i].x + mObj2X, b[i].y+mObj2Y, cellSymbolFigure);
+			structB[i].x = figures[gPreviewNextFigure][i] % 2;
+			structB[i].y = figures[gPreviewNextFigure][i] / 2;
+			SetChar(structB[i].x + mObj2X, structB[i].y+mObj2Y, cellSymbolFigure);
 
 			
 		}
 		createNewFigure = false;
+		figureFall = false;
 		gCreateFigure = gPreviewNextFigure;
 	}
 	
@@ -263,9 +280,10 @@ void TestApp::Initializefigure(){
 void TestApp::UpdateF(float deltaTime){
 	
 	
+
 	Initializefigure();
 	
-
+	
 
 	
 }

@@ -51,6 +51,6 @@ public:
 	ћетод KeyPressed так же можно переопределить в наследнике*/
 	virtual void KeyPressed (int btnCode){}
 
-	
+	virtual void DownFigure(float sum) {}
 
 };

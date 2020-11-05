@@ -18,4 +18,4 @@ struct Point
 {
 	
 	int x, y;
-} a[4], b[4];
+} structA[4], structB[4];

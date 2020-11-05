@@ -93,6 +93,8 @@ wchar_t BaseApp::GetChar(int x, int y)
 
 
 
+
+
 void BaseApp::Render(HANDLE mConsoleOutput, const CHAR_INFO *mChiBuffer, COORD mDwBufferSize,
 	COORD mDwBufferCoord, SMALL_RECT& mLpWriteRegion)
 {
@@ -141,7 +143,7 @@ void BaseApp::Run()
 		counter++;
 
 		sumFigure += deltaTime;
-		if (sumFigure > 100 && cnt == 0 )
+		if (sumFigure > 100 && cnt == 0 || sum >= 1000)
 		{
 			//DownFigure(sumFigure);
 			cnt++;
@@ -156,7 +158,6 @@ void BaseApp::Run()
 			TCHAR  szbuff[255];
 			StringCchPrintf(szbuff, 255, TEXT("FPS: %d"), counter);
 			SetConsoleTitle(szbuff);
-			//DownFigure(sum);
 			counter = 0;
 			sum = 0;
 			cnt = 0;
