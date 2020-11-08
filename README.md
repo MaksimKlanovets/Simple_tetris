@@ -1,1 +1,1 @@
-# Simple_tetris
+# Simple_tetris Консольный тетрис, на этапе разработки 
