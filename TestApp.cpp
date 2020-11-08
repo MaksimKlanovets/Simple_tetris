@@ -1,8 +1,3 @@
-// Copyright 2009-2014 Blam Games, Inc. All Rights Reserved.
-
-//перегрузить  инкременты mObj1OldY-Y
-
-
 #include "TestApp.h"
 #include "Figures.h"
 #include <cstdlib> // для функций rand() и srand()
@@ -28,28 +23,28 @@ TestApp::TestApp() : Parent(24 , 24){
 	gCreateFigure = rand() % 7;
 }
 void TestApp::DownFigure(float sum){
-	if (sum >= 100  && figureFall == true) {
-		mObj1Y++;
+		
+	if (figureFall == true && sum >100)
+	{
+		KeyPressed(115);
 	}
-	else if (sum >=1000 && CanStepBelow()){
-		mObj1Y++;
+	else if (sum >= 1000)
+	{
+		
+		KeyPressed(1);
 	}
-	
 }
 
 void TestApp::KeyPressed(int btnCode)
 {
-	
-
 	mObj1XOld = mObj1X;
 	mObj1YOld = mObj1Y;
 
-	
 	switch (btnCode)
 	{
 	case 119://w
 	{
-		mObj1Y--;
+		//mObj1Y--;
 		break;
 	}
 	case 115: //s
@@ -58,7 +53,6 @@ void TestApp::KeyPressed(int btnCode)
 		mObj1Y++;
 		break;
 	}
-
 	case 97://a
 	{
 		mObj1X--;
@@ -73,6 +67,11 @@ void TestApp::KeyPressed(int btnCode)
 	case 32://space
 	{
 		mRotate = true;
+		break;
+	}
+	case 1://падение
+	{
+		mObj1Y++;
 		break;
 	}
 	default:
@@ -98,20 +97,17 @@ void TestApp::KeyPressed(int btnCode)
 	//если фолс новые коорд = страрым
 	else if (!CanStepBelow())
 	{
-		  
-		  createNewFigure = true;
+		//проверяем есть ли возможность удалить полосу
+		CanDeleteLineBoard();
+		figureFall = false;
+		createNewFigure = true;
+
 	}
 	else {
 		  mObj1X = mObj1XOld;
 		  mObj1Y = mObj1YOld;
 	}
 	
-	//if (mObj1X < 1) { mObj1X = 1; }
-
-	//проверяем есть ли возможность удалить полосу
-	CanDeleteLineBoard();
-
-
 	//создание новой фигуры
 	Initializefigure();
 }
@@ -279,8 +275,6 @@ void TestApp::Initializefigure(){
 
 void TestApp::UpdateF(float deltaTime){
 	
-	
-
 	Initializefigure();
 	
 	

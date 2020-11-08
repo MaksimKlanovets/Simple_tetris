@@ -143,9 +143,9 @@ void BaseApp::Run()
 		counter++;
 
 		sumFigure += deltaTime;
-		if (sumFigure > 100 && cnt == 0 || sum >= 1000)
+		if (sumFigure > 100 && cnt == 0 )
 		{
-			//DownFigure(sumFigure);
+			DownFigure(sumFigure);
 			cnt++;
 			sumFigure = 0;
 			cnt = 0;
@@ -159,9 +159,10 @@ void BaseApp::Run()
 			StringCchPrintf(szbuff, 255, TEXT("FPS: %d"), counter);
 			SetConsoleTitle(szbuff);
 			counter = 0;
+			DownFigure(sum);
 			sum = 0;
 			cnt = 0;
-			
+			sumFigure = 0;
 		}
 
 
