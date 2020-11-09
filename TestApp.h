@@ -52,5 +52,10 @@ class TestApp : public BaseApp
 		//можно ли удалить полосу
 	
 		void CanDeleteLineBoard();
+		void GameEnded();
+
+		void SetLevel();
+		void SetScore();
+		void SetPoints();
 		
 };

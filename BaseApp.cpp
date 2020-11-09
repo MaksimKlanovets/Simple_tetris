@@ -14,6 +14,7 @@
 
 #include "PerformanceCounter.h"
 #include "level.h"
+#include "consoleColor.h"
 
 
 BaseApp::BaseApp(int xSize, int ySize) :
@@ -71,6 +72,19 @@ BaseApp::BaseApp(int xSize, int ySize) :
 			}
 		}
 	}
+	const unsigned char infoGame[3][5]{ {'L','e','v','e','l' }, {'S','c','o','r','e' },
+		{'P','o','i','n','t' } };
+
+	
+		for (int c = 0; c < 5; c++)
+		{
+			SetChar(3+c, 21, infoGame[0][c]);
+			SetChar(3+c, 22, infoGame[1][c]);
+			SetChar(3+c, 23, infoGame[2][c]);
+		}
+	
+	
+
 }
 
 BaseApp::~BaseApp()
@@ -84,6 +98,7 @@ void BaseApp::SetChar(int x, int y, wchar_t c)
 	mChiBuffer[x + (X_SIZE+1)*y].Attributes = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;
 	WriteConsoleOutput(mConsoleOutput, mChiBuffer, mDwBufferSize, mDwBufferCoord, &mLpWriteRegion);
 
+	
 }
 
 wchar_t BaseApp::GetChar(int x, int y)

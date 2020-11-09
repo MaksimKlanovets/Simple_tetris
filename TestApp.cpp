@@ -3,7 +3,7 @@
 #include <cstdlib> // для функций rand() и srand()
 #include <ctime> // для функции time()
 #include "PerformanceCounter.h"
- // задаём тип тетрамино
+ // задаём тип фигуры
 int gPreviewNextFigure ;
 
 TestApp::TestApp() : Parent(24 , 24){
@@ -93,6 +93,12 @@ void TestApp::KeyPressed(int btnCode)
 		//установить новые
 		setFigureNewCoord();
 	}
+	//проверяем следующие координаты
+	if (mObj1X <= 1 && !checkCoordForMove(structA))
+	{
+		// the end 
+
+	}
 
 	//если фолс новые коорд = страрым
 	else if (!CanStepBelow())
@@ -111,10 +117,6 @@ void TestApp::KeyPressed(int btnCode)
 	//создание новой фигуры
 	Initializefigure();
 }
-
-
-
-
 
 bool TestApp::CanStepBelow()
 {
@@ -154,7 +156,7 @@ void TestApp::setFigureOldCoord()
 }
 bool TestApp::CanRotateFigure()
 {
-	//deleteFigure();
+	
 	bool bResultWork = true;
 	for (int i = 0; i < 4; i++)
 	{
@@ -166,8 +168,6 @@ bool TestApp::CanRotateFigure()
 		for (int i = 0; i < 4; i++) {
 			int x = structA[i].y - p.y; // y - y0
 			int y = structA[i].x - p.x; // x - x0
-
-			
 		}
 
 		for (int i = 0; i < 4; i++) {
@@ -185,13 +185,10 @@ bool TestApp::CanRotateFigure()
 			{
 				structA[i] = structB[i];
 			}
-			
-
 		}
 		else {
 			bResultWork = false;
 		}
-		//setFigureOldCoord();
 		mRotate = false;
 	return bResultWork;
 }
@@ -213,6 +210,16 @@ void TestApp::CanDeleteLineBoard()
 		}
 	}
 }
+void TestApp::GameEnded()
+{
+	//SetConsoleTextAttribute(consoleHandle, ConsoleColor_Green);
+	unsigned char endGame[]={'Y','U','O', ' ','L','O','S','E','!'};
+	for (int i = 0; endGame[i] != '\n'; i++)
+	{
+		
+		SetChar(4 + i, 10, endGame[i]);
+	}
+}
 bool TestApp::checkCoordForMove(Point *ab)
 {
 	bool bResultWork = true;
@@ -229,8 +236,6 @@ bool TestApp::checkCoordForMove(Point *ab)
 		} 
 		setFigureOldCoord();
 	}
-	
-
 	return bResultWork;
 }
 
@@ -262,23 +267,17 @@ void TestApp::Initializefigure(){
 			structB[i].x = figures[gPreviewNextFigure][i] % 2;
 			structB[i].y = figures[gPreviewNextFigure][i] / 2;
 			SetChar(structB[i].x + mObj2X, structB[i].y+mObj2Y, cellSymbolFigure);
-
-			
 		}
 		createNewFigure = false;
 		figureFall = false;
 		gCreateFigure = gPreviewNextFigure;
 	}
-	
 }
  
 
 void TestApp::UpdateF(float deltaTime){
 	
 	Initializefigure();
-	
-	
-
-	
+	GameEnded();
 }
 
