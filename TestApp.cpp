@@ -3,7 +3,7 @@
 #include <cstdlib> // для функций rand() и srand()
 #include <ctime> // для функции time()
 #include "PerformanceCounter.h"
- // задаём тип фигуры
+
 int gPreviewNextFigure ;
 
 TestApp::TestApp() : Parent(24 , 24){
@@ -21,6 +21,10 @@ TestApp::TestApp() : Parent(24 , 24){
 	createNewFigure = true;
 	figureFall = false;
 	gCreateFigure = rand() % 7;
+
+	mLevel = 1;
+	mScore = 1;
+	mPoints = 0;
 }
 void TestApp::DownFigure(float sum){
 		
@@ -94,11 +98,6 @@ void TestApp::KeyPressed(int btnCode)
 		setFigureNewCoord();
 	}
 	//проверяем следующие координаты
-	if (mObj1X <= 1 && !checkCoordForMove(structA))
-	{
-		// the end 
-
-	}
 
 	//если фолс новые коорд = страрым
 	else if (!CanStepBelow())
@@ -164,12 +163,8 @@ bool TestApp::CanRotateFigure()
 	}
 	
 	// Вращение
-		Point p = structA[1]; // указываем центр вращения
-		for (int i = 0; i < 4; i++) {
-			int x = structA[i].y - p.y; // y - y0
-			int y = structA[i].x - p.x; // x - x0
-		}
-
+		Point p = structA[2]; // указываем центр вращения
+	
 		for (int i = 0; i < 4; i++) {
 			int x = structB[i].y - p.y; // y - y0
 			int y = structB[i].x - p.x; // x - x0
@@ -213,12 +208,31 @@ void TestApp::CanDeleteLineBoard()
 void TestApp::GameEnded()
 {
 	//SetConsoleTextAttribute(consoleHandle, ConsoleColor_Green);
-	unsigned char endGame[]={'Y','U','O', ' ','L','O','S','E','!'};
+	unsigned char endGame[]={'Y','O','U', ' ','L','O','S','E','!','\n'};
 	for (int i = 0; endGame[i] != '\n'; i++)
 	{
 		
 		SetChar(4 + i, 10, endGame[i]);
 	}
+
+}
+bool TestApp::CanCreateNewFigure()
+{
+	bool bResultWork = true;
+	for (int i = 0; i < 4; i++)
+	{
+		if (GetChar(structA[i].x + mObj1X, structA[i].y + mObj1Y) == gWallLevelData ||
+			GetChar(structA[i].x + mObj1X, structA[i].y + mObj1Y) == cellSymbolFigure)
+		{
+			bResultWork = false;
+		}
+	}
+	return bResultWork;
+}
+
+void TestApp::SetLevel()
+{
+
 }
 bool TestApp::checkCoordForMove(Point *ab)
 {
@@ -239,14 +253,17 @@ bool TestApp::checkCoordForMove(Point *ab)
 	return bResultWork;
 }
 
-
-
 void TestApp::Initializefigure(){
 	
-	if (createNewFigure == true)	{
-
+	if (createNewFigure == true )	{
+		
 		mObj1XOld = mObj1X = 7;
 		mObj1YOld = mObj1Y = 1;
+	
+		if (!CanCreateNewFigure())
+		{
+			GameEnded();
+		}
 
 		gPreviewNextFigure = rand() % 7;
 
@@ -259,25 +276,32 @@ void TestApp::Initializefigure(){
 		}
 
 		for (int i = 0; i < 4; i++)	{
+			
 			structA[i].x = figures[gCreateFigure][i] % 2;
-			structA[i].y = figures[gCreateFigure][i] / 2;
+			structA[i].y = (figures[gCreateFigure][i] / 2) - 0.9;
 			SetChar(structA[i].x + mObj1X, structA[i].y+mObj1Y, cellSymbolFigure);
 
 			// превью следующей фигуры
 			structB[i].x = figures[gPreviewNextFigure][i] % 2;
-			structB[i].y = figures[gPreviewNextFigure][i] / 2;
+			structB[i].y = (figures[gPreviewNextFigure][i] / 2)-0.9;
 			SetChar(structB[i].x + mObj2X, structB[i].y+mObj2Y, cellSymbolFigure);
 		}
 		createNewFigure = false;
 		figureFall = false;
 		gCreateFigure = gPreviewNextFigure;
 	}
+
+	SetLevel();
 }
  
-
 void TestApp::UpdateF(float deltaTime){
 	
 	Initializefigure();
-	GameEnded();
+
+	/*if (mObj1Y <=  1 && !CanStepBelow())
+	{
+		GameEnded();
+	}*/
+	
 }
 

@@ -1,5 +1,3 @@
-// Copyright 2009-2014 Blam Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "BaseApp.h"
@@ -26,6 +24,10 @@ class TestApp : public BaseApp
 		bool figureFall;
 
 		int gCreateFigure;
+
+		int mLevel;
+		int mScore;
+		int mPoints;
 	public:
 		TestApp();
 		void DownFigure(float sum);
@@ -33,8 +35,6 @@ class TestApp : public BaseApp
 		virtual void UpdateF(float deltaTime);
 		void Initializefigure();
 
-
-		
 		////////////////////////////////////////////////////////////////
 		// function checkCoordForMove
 		bool checkCoordForMove(struct Point *ab);
@@ -53,9 +53,13 @@ class TestApp : public BaseApp
 	
 		void CanDeleteLineBoard();
 		void GameEnded();
+		bool CanCreateNewFigure();
 
+		//Установить уровень
 		void SetLevel();
+		//Установить скорость 
 		void SetScore();
+		//Установить счет 
 		void SetPoints();
 		
 };
